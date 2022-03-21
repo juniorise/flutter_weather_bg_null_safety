@@ -4,6 +4,7 @@ import 'package:flutter_weather_bg_null_safety/bg/weather_color_bg.dart';
 import 'package:flutter_weather_bg_null_safety/bg/weather_night_star_bg.dart';
 import 'package:flutter_weather_bg_null_safety/bg/weather_rain_snow_bg.dart';
 import 'package:flutter_weather_bg_null_safety/bg/weather_thunder_bg.dart';
+import 'package:flutter_weather_bg_null_safety/utils/print_utils.dart';
 import 'package:flutter_weather_bg_null_safety/utils/weather_type.dart';
 
 /// 最核心的类，集合背景&雷&雨雪&晴晚&流星效果
@@ -14,7 +15,15 @@ class WeatherBg extends StatefulWidget {
   final double width;
   final double height;
 
-  const WeatherBg({Key? key, required this.weatherType, required this.width, required this.height}) : super(key: key);
+  WeatherBg({
+    Key? key,
+    required this.weatherType,
+    required this.width,
+    required this.height,
+    bool debug = true,
+  }) : super(key: key) {
+    debugging = debug;
+  }
 
   @override
   _WeatherBgState createState() => _WeatherBgState();
