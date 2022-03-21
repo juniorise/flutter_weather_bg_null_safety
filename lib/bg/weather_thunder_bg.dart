@@ -11,17 +11,19 @@ import 'package:flutter_weather_bg_null_safety/utils/weather_type.dart';
 class WeatherThunderBg extends StatefulWidget {
   final WeatherType weatherType;
 
-  WeatherThunderBg({Key? key, required this.weatherType}) : super(key: key);
+  const WeatherThunderBg({
+    Key? key,
+    required this.weatherType,
+  }) : super(key: key);
 
   @override
   _WeatherCloudBgState createState() => _WeatherCloudBgState();
 }
 
-class _WeatherCloudBgState extends State<WeatherThunderBg>
-    with SingleTickerProviderStateMixin {
-  List<ui.Image> _images = [];
+class _WeatherCloudBgState extends State<WeatherThunderBg> with SingleTickerProviderStateMixin {
+  final List<ui.Image> _images = [];
   late AnimationController _controller;
-  List<ThunderParams> _thunderParams = [];
+  final List<ThunderParams> _thunderParams = [];
   WeatherDataState? _state;
 
   /// 异步获取雷暴图片资源
@@ -51,12 +53,11 @@ class _WeatherCloudBgState extends State<WeatherThunderBg>
 
   // 这里用于初始化动画相关，将闪电三个作为一组循环播放展示
   void initAnim() {
-    _controller =
-        AnimationController(duration: Duration(seconds: 3), vsync: this);
+    _controller = AnimationController(duration: const Duration(seconds: 3), vsync: this);
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _controller.reset();
-        Future.delayed(Duration(milliseconds: 50)).then((value) {
+        Future.delayed(const Duration(milliseconds: 50)).then((value) {
           initThunderParams();
           _controller.forward();
         });
@@ -65,17 +66,11 @@ class _WeatherCloudBgState extends State<WeatherThunderBg>
 
     // 构造第一个闪电的动画数据
     var _animation = TweenSequence([
-      TweenSequenceItem(
-          tween: Tween(begin: 0.0, end: 1.0)
-              .chain(CurveTween(curve: Curves.easeIn)),
-          weight: 1),
-      TweenSequenceItem(
-          tween: Tween(begin: 1.0, end: 0.0)
-              .chain(CurveTween(curve: Curves.easeIn)),
-          weight: 3),
+      TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.easeIn)), weight: 1),
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.0).chain(CurveTween(curve: Curves.easeIn)), weight: 3),
     ]).animate(CurvedAnimation(
       parent: _controller,
-      curve: Interval(
+      curve: const Interval(
         0.0,
         0.3,
         curve: Curves.ease,
@@ -84,17 +79,11 @@ class _WeatherCloudBgState extends State<WeatherThunderBg>
 
     // 构造第二个闪电的动画数据
     var _animation1 = TweenSequence([
-      TweenSequenceItem(
-          tween: Tween(begin: 0.0, end: 1.0)
-              .chain(CurveTween(curve: Curves.easeIn)),
-          weight: 1),
-      TweenSequenceItem(
-          tween: Tween(begin: 1.0, end: 0.0)
-              .chain(CurveTween(curve: Curves.easeIn)),
-          weight: 3),
+      TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.easeIn)), weight: 1),
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.0).chain(CurveTween(curve: Curves.easeIn)), weight: 3),
     ]).animate(CurvedAnimation(
       parent: _controller,
-      curve: Interval(
+      curve: const Interval(
         0.2,
         0.5,
         curve: Curves.ease,
@@ -103,17 +92,11 @@ class _WeatherCloudBgState extends State<WeatherThunderBg>
 
     // 构造第三个闪电的动画数据
     var _animation2 = TweenSequence([
-      TweenSequenceItem(
-          tween: Tween(begin: 0.0, end: 1.0)
-              .chain(CurveTween(curve: Curves.easeIn)),
-          weight: 1),
-      TweenSequenceItem(
-          tween: Tween(begin: 1.0, end: 0.0)
-              .chain(CurveTween(curve: Curves.easeIn)),
-          weight: 3),
+      TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.easeIn)), weight: 1),
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.0).chain(CurveTween(curve: Curves.easeIn)), weight: 3),
     ]).animate(CurvedAnimation(
       parent: _controller,
-      curve: Interval(
+      curve: const Interval(
         0.6,
         0.9,
         curve: Curves.ease,
@@ -151,8 +134,7 @@ class _WeatherCloudBgState extends State<WeatherThunderBg>
   /// 构建雷暴 widget
   Widget _buildWidget() {
     // 这里需要判断天气类别信息，防止不需要绘制的时候绘制，影响性能
-    if (_thunderParams.isNotEmpty &&
-        widget.weatherType == WeatherType.thunder) {
+    if (_thunderParams.isNotEmpty && widget.weatherType == WeatherType.thunder) {
       return CustomPaint(
         painter: ThunderPainter(_thunderParams),
       );
@@ -171,8 +153,7 @@ class _WeatherCloudBgState extends State<WeatherThunderBg>
     var widthRatio = width / 392.0;
     // 配置三个闪电信息
     for (var i = 0; i < 3; i++) {
-      var param = ThunderParams(
-          _images[Random().nextInt(5)], width, height, widthRatio);
+      var param = ThunderParams(_images[Random().nextInt(5)], width, height, widthRatio);
       param.reset();
       _thunderParams.add(param);
     }
@@ -192,7 +173,7 @@ class _WeatherCloudBgState extends State<WeatherThunderBg>
 }
 
 class ThunderPainter extends CustomPainter {
-  var _paint = Paint();
+  final _paint = Paint();
   final List<ThunderParams> thunderParams;
 
   ThunderPainter(this.thunderParams);

@@ -13,22 +13,21 @@ class WeatherRainSnowBg extends StatefulWidget {
   final double viewWidth;
   final double viewHeight;
 
-  WeatherRainSnowBg(
-      {Key? key,
-      required this.weatherType,
-      required this.viewWidth,
-      required this.viewHeight})
-      : super(key: key);
+  const WeatherRainSnowBg({
+    Key? key,
+    required this.weatherType,
+    required this.viewWidth,
+    required this.viewHeight,
+  }) : super(key: key);
 
   @override
   _WeatherRainSnowBgState createState() => _WeatherRainSnowBgState();
 }
 
-class _WeatherRainSnowBgState extends State<WeatherRainSnowBg>
-    with SingleTickerProviderStateMixin {
-  List<ui.Image> _images = [];
+class _WeatherRainSnowBgState extends State<WeatherRainSnowBg> with SingleTickerProviderStateMixin {
+  final List<ui.Image> _images = [];
   late AnimationController _controller;
-  List<RainSnowParams> _rainSnows = [];
+  final List<RainSnowParams> _rainSnows = [];
   int count = 0;
   WeatherDataState? _state;
 
@@ -56,8 +55,7 @@ class _WeatherRainSnowBgState extends State<WeatherRainSnowBg>
           count = 70;
         } else if (widget.weatherType == WeatherType.middleRainy) {
           count = 100;
-        } else if (widget.weatherType == WeatherType.heavyRainy ||
-            widget.weatherType == WeatherType.thunder) {
+        } else if (widget.weatherType == WeatherType.heavyRainy || widget.weatherType == WeatherType.thunder) {
           count = 200;
         } else if (widget.weatherType == WeatherType.lightSnow) {
           count = 30;
@@ -72,8 +70,7 @@ class _WeatherRainSnowBgState extends State<WeatherRainSnowBg>
         var widthRatio = width / 392.0;
         var heightRatio = height / 817;
         for (int i = 0; i < count; i++) {
-          var rainSnow = RainSnowParams(
-              widget.viewWidth, widget.viewHeight, widget.weatherType);
+          var rainSnow = RainSnowParams(widget.viewWidth, widget.viewHeight, widget.weatherType);
           rainSnow.init(widthRatio, heightRatio);
           _rainSnows.add(rainSnow);
         }
@@ -97,8 +94,7 @@ class _WeatherRainSnowBgState extends State<WeatherRainSnowBg>
 
   @override
   void initState() {
-    _controller =
-        AnimationController(duration: Duration(minutes: 1), vsync: this);
+    _controller = AnimationController(duration: const Duration(minutes: 1), vsync: this);
     CurvedAnimation(parent: _controller, curve: Curves.linear);
     _controller.addListener(() {
       setState(() {});
@@ -132,8 +128,8 @@ class _WeatherRainSnowBgState extends State<WeatherRainSnowBg>
 }
 
 class RainSnowPainter extends CustomPainter {
-  var _paint = Paint();
-  _WeatherRainSnowBgState _state;
+  final _paint = Paint();
+  final _WeatherRainSnowBgState _state;
 
   RainSnowPainter(this._state);
 
@@ -150,7 +146,7 @@ class RainSnowPainter extends CustomPainter {
     if (_state._images.length > 1) {
       ui.Image image = _state._images[0];
       if (_state._rainSnows.isNotEmpty) {
-        _state._rainSnows.forEach((element) {
+        for (RainSnowParams element in _state._rainSnows) {
           move(element);
           ui.Offset offset = ui.Offset(element.x, element.y);
           canvas.save();
@@ -180,7 +176,7 @@ class RainSnowPainter extends CustomPainter {
           _paint.colorFilter = identity;
           canvas.drawImage(image, offset, _paint);
           canvas.restore();
-        });
+        }
       }
     }
   }
@@ -188,15 +184,12 @@ class RainSnowPainter extends CustomPainter {
   void move(RainSnowParams params) {
     params.y = params.y + params.speed;
     if (WeatherUtil.isSnow(_state.widget.weatherType)) {
-      double offsetX = sin(params.y / (300 + 50 * params.alpha)) *
-          (1 + 0.5 * params.alpha) *
-          params.widthRatio;
+      double offsetX = sin(params.y / (300 + 50 * params.alpha)) * (1 + 0.5 * params.alpha) * params.widthRatio;
       params.x += offsetX;
     }
     if (params.y > params.height / params.scale) {
       params.y = -params.height * params.scale;
-      if (WeatherUtil.isRainy(_state.widget.weatherType) &&
-          _state._images.isNotEmpty) {
+      if (WeatherUtil.isRainy(_state.widget.weatherType) && _state._images.isNotEmpty) {
         params.y = -_state._images[0].height.toDouble();
       }
       params.reset();
@@ -207,7 +200,7 @@ class RainSnowPainter extends CustomPainter {
     if (_state._images.length > 1) {
       ui.Image image = _state._images[1];
       if (_state._rainSnows.isNotEmpty) {
-        _state._rainSnows.forEach((element) {
+        for (var element in _state._rainSnows) {
           move(element);
           ui.Offset offset = ui.Offset(element.x, element.y);
           canvas.save();
@@ -237,7 +230,7 @@ class RainSnowPainter extends CustomPainter {
           _paint.colorFilter = identity;
           canvas.drawImage(image, offset, _paint);
           canvas.restore();
-        });
+        }
       }
     }
   }
@@ -295,8 +288,7 @@ class RainSnowParams {
       ratio = 0.5;
     } else if (weatherType == WeatherType.middleRainy) {
       ratio = 0.75;
-    } else if (weatherType == WeatherType.heavyRainy ||
-        weatherType == WeatherType.thunder) {
+    } else if (weatherType == WeatherType.heavyRainy || weatherType == WeatherType.thunder) {
       ratio = 1;
     } else if (weatherType == WeatherType.lightSnow) {
       ratio = 0.5;
@@ -307,18 +299,16 @@ class RainSnowParams {
     }
     if (WeatherUtil.isRainy(weatherType)) {
       double random = 0.4 + 0.12 * Random().nextDouble() * 5;
-      this.scale = random * 1.2;
-      this.speed = 30 * random * ratio * heightRatio;
-      this.alpha = random * 0.6;
-      x = Random().nextInt(width * 1.2 ~/ scale).toDouble() -
-          width * 0.1 ~/ scale;
+      scale = random * 1.2;
+      speed = 30 * random * ratio * heightRatio;
+      alpha = random * 0.6;
+      x = Random().nextInt(width * 1.2 ~/ scale).toDouble() - width * 0.1 ~/ scale;
     } else {
       double random = 0.4 + 0.12 * Random().nextDouble() * 5;
-      this.scale = random * 0.8 * heightRatio;
-      this.speed = 8 * random * ratio * heightRatio;
-      this.alpha = random;
-      x = Random().nextInt(width * 1.2 ~/ scale).toDouble() -
-          width * 0.1 ~/ scale;
+      scale = random * 0.8 * heightRatio;
+      speed = 8 * random * ratio * heightRatio;
+      alpha = random;
+      x = Random().nextInt(width * 1.2 ~/ scale).toDouble() - width * 0.1 ~/ scale;
     }
   }
 }

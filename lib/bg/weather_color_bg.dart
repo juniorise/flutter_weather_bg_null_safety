@@ -8,8 +8,11 @@ class WeatherColorBg extends StatelessWidget {
   /// 控制背景的高度
   final double? height;
 
-  WeatherColorBg({Key? key, required this.weatherType, this.height})
-      : super(key: key);
+  const WeatherColorBg({
+    Key? key,
+    required this.weatherType,
+    this.height,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +21,7 @@ class WeatherColorBg extends StatelessWidget {
       decoration: BoxDecoration(
           gradient: LinearGradient(
         colors: WeatherUtil.getColor(weatherType),
-        stops: [0, 1],
+        stops: const [0, 1],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       )),

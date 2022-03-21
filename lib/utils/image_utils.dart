@@ -1,7 +1,5 @@
 import 'dart:ui';
 import 'dart:ui' as ui;
-import 'dart:typed_data';
-
 import 'package:flutter/services.dart';
 
 /// 图片相关的工具类
